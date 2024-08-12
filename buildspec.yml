@@ -14,10 +14,10 @@ phases:
     commands:
       - echo Creating tar.gz archive of build files...
       - cd dist
-      - tar -czvf ../PLN1000573.tar.gz *
+      - tar -czvf ../PLN1000574.tar.gz *
   post_build:
     commands:
       - echo Pushing artifacts...
 artifacts:
   files:
-    - PLN1000573.tar.gz
+    - PLN1000574.tar.gz
