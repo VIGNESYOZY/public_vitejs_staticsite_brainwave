@@ -12,7 +12,7 @@ phases:
       - npm run build --verbose
   build:
     commands:
-      - echo ID_JVZsB4Oh
+      - echo ID_4QMobs6f
       - echo Creating tar.gz archive of build files...
       - cd dist
       - tar -czvf ../PLN5000141.tar.gz *
