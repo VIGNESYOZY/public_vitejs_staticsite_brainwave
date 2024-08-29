@@ -12,13 +12,13 @@ phases:
       - npm run build --verbose
   build:
     commands:
-      - echo ID_XEsH6g8f
+      - echo ID_aZEpQk3o
       - echo Creating tar.gz archive of build files...
       - cd dist
-      - tar -czvf ../PLN5000140.tar.gz *
+      - tar -czvf ../PLN5000141.tar.gz *
   post_build:
     commands:
       - echo Pushing artifacts...
 artifacts:
   files:
-    - PLN5000140.tar.gz
+    - PLN5000141.tar.gz
