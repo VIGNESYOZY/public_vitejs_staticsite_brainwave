@@ -1,0 +1,42 @@
+steps:
+  # Phase: Install
+  - name: 'node:18.20.4'  # Use Node.js 18.20.4 image
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "Installing dependencies..."
+        npm install --force
+
+  # Phase: Pre-build
+  - name: 'node:18.20.4'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "Building project..."
+        npm run build --verbose
+
+  # Phase: Build
+  - name: 'node:18.20.4'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "ID_jbYMOjYO"
+        echo "Creating tar.gz archive of build files..."
+        cd build
+        tar -czvf ../PLN1000688.tar.gz *
+
+  # Phase: Post-build (Upload to GCS)
+  - name: 'gcr.io/cloud-builders/gsutil'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - 'gsutil cp PLN1000688.tar.gz gs://$BUCKET_NAME/$PREFIX/PLN1000688.tar.gz'
+
+artifacts:
+  objects:
+    location: 'gs://$BUCKET_NAME/$PREFIX'
+    paths:
+      - 'PLN1000688.tar.gz'
