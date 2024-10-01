@@ -1,0 +1,52 @@
+options:
+  logging: NONE
+
+steps:
+  # Phase: Install dependencies
+  - name: 'node:18.20.4'  # Use Node.js 18.20.4 image
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "Installing dependencies..."
+        npm install --force
+
+  # Phase: Pre-build
+  - name: 'node:18.20.4'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "Building project..."
+        npm run build --verbose
+
+  # Phase: Create tar.gz archive of build files
+  - name: 'node:18.20.4'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "ID_jbYMOjYO"
+        echo "Creating tar.gz archive of build files..."
+        if [ -d build ]; then  # Check if the build directory exists
+          cd build  # Change to the build directory
+          tar -czvf ../artiiiff.tar.gz *  # Create the archive
+        else
+          echo "Error: Build directory does not exist."
+          exit 1  # Exit with an error if the directory doesn't exist
+        fi
+
+  # Phase: Upload to Google Cloud Storage
+  - name: 'gcr.io/cloud-builders/gsutil'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "Uploading tar.gz archive to Google Cloud Storage..."
+        gsutil cp ../artiiiff.tar.gz gs://devozy_test/devozy_test/1.0.0/artiiiff.tar.gz  # Correct path to tar.gz
+
+artifacts:
+  objects:
+    location: 'gs://devozy_test/devozy_test/1.0.0'
+    paths:
+      - 'artiiiff.tar.gz'  # Path to the artifact
