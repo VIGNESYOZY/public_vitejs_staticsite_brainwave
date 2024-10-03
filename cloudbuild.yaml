@@ -66,10 +66,4 @@ steps:
       - |
         echo "Uploading tar.gz archive to Google Cloud Storage..."
         gsutil cp public_vitejs_staticsite_brainwave/artiiiff.tar.gz gs://devozy_test/devozy_test/1.0.0/artiiiff.tar.gz  # Correct path to tar.gz
-
-
-artifacts:
-  objects:
-    location: 'gs://devozy_test/devozy_test/1.0.0'
-    paths:
-      - 'artiiiff.tar.gz'  # Path to the artifact
+        echo "Uploaded tar.gz archive to Google Cloud Storage..."
