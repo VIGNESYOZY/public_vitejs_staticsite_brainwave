@@ -1,5 +1,5 @@
 options:
-  logging: NONE
+  logging: CLOUD_LOGGING_ONLY
 
 steps:
   # Step: Clone the repository using GitHub token passed as substitution
@@ -33,6 +33,15 @@ steps:
         cd public_vitejs_staticsite_brainwave  # Change to the cloned repo directory
         npm run build --verbose
 
+  # Phase: Log Node.js version
+  - name: 'node:18.20.4'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "Node.js version:"
+        node -v  # Log the Node.js version
+
   # Phase: Create tar.gz archive of build files
   - name: 'node:18.20.4'
     entrypoint: 'bash'
@@ -40,9 +49,10 @@ steps:
       - '-c'
       - |
         echo "Creating tar.gz archive of build files..."
-        if [ -d public_vitejs_staticsite_brainwave/build ]; then  # Check if the build directory exists
-          cd public_vitejs_staticsite_brainwave/build  # Change to the build directory
+        if [ -d public_vitejs_staticsite_brainwave/dist ]; then  # Check if the build directory exists
+          cd public_vitejs_staticsite_brainwave/dist  # Change to the build directory
           tar -czvf ../artiiiff.tar.gz *  # Create the archive
+          echo "Tar file created at: $(pwd)/../artiiiff.tar.gz"
         else
           echo "Error: Build directory does not exist."
           exit 1  # Exit with an error if the directory doesn't exist
@@ -55,7 +65,8 @@ steps:
       - '-c'
       - |
         echo "Uploading tar.gz archive to Google Cloud Storage..."
-        gsutil cp ../artiiiff.tar.gz gs://devozy_test/devozy_test/1.0.0/artiiiff.tar.gz  # Correct path to tar.gz
+        gsutil cp public_vitejs_staticsite_brainwave/artiiiff.tar.gz gs://devozy_test/devozy_test/1.0.0/artiiiff.tar.gz  # Correct path to tar.gz
+
 
 artifacts:
   objects:
