@@ -65,5 +65,5 @@ steps:
       - '-c'
       - |
         echo "Uploading tar.gz archive to Google Cloud Storage..."
-        gsutil cp public_vitejs_staticsite_brainwave/artiiiff.tar.gz gs://devozy_test/devozy_test/1.0.0/artiiiff.tar.gz  # Correct path to tar.gz
+        gsutil cp public_vitejs_staticsite_brainwave/artiiiff.tar.gz gs://devozy_test/devozy_test/1.0.1/artiiiff.tar.gz  # Correct path to tar.gz
         echo "Uploaded tar.gz archive to Google Cloud Storage..."
