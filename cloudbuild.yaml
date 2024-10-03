@@ -2,6 +2,17 @@ options:
   logging: NONE
 
 steps:
+  # Step: Clone the repository using GitHub token passed as substitution
+  - name: 'gcr.io/cloud-builders/git'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "Cloning the repository..."
+        git config --global credential.helper 'store --file=/root/.git-credentials'
+        echo "https://${_GITHUB_PAT}:@github.com/VIGNESYOZY/public_vitejs_staticsite_brainwave.git" > /root/.git-credentials
+        git clone https://github.com/VIGNESYOZY/public_vitejs_staticsite_brainwave.git
+
   # Phase: Install dependencies
   - name: 'node:18.20.4'  # Use Node.js 18.20.4 image
     entrypoint: 'bash'
@@ -9,6 +20,7 @@ steps:
       - '-c'
       - |
         echo "Installing dependencies..."
+        cd public_vitejs_staticsite_brainwave  # Change to the cloned repo directory
         npm install --force
 
   # Phase: Pre-build
@@ -18,6 +30,7 @@ steps:
       - '-c'
       - |
         echo "Building project..."
+        cd public_vitejs_staticsite_brainwave  # Change to the cloned repo directory
         npm run build --verbose
 
   # Phase: Create tar.gz archive of build files
@@ -26,10 +39,9 @@ steps:
     args:
       - '-c'
       - |
-        echo "ID_jbYMOjYO"
         echo "Creating tar.gz archive of build files..."
-        if [ -d build ]; then  # Check if the build directory exists
-          cd build  # Change to the build directory
+        if [ -d public_vitejs_staticsite_brainwave/build ]; then  # Check if the build directory exists
+          cd public_vitejs_staticsite_brainwave/build  # Change to the build directory
           tar -czvf ../artiiiff.tar.gz *  # Create the archive
         else
           echo "Error: Build directory does not exist."
