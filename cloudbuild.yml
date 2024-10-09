@@ -41,8 +41,8 @@ steps:
         echo "Creating tar.gz archive of build files..."
                   if [ -d public_vitejs_staticsite_brainwave.git/build ]; then
                     cd public_vitejs_staticsite_brainwave.git/build
-                    tar -czvf ../PLN6000099_MERN_Development *
-                    echo "Tar file created at: $(pwd)/../PLN6000099_MERN_Development"
+                    tar -czvf ../PLN6000101_MERN_Development *
+                    echo "Tar file created at: $(pwd)/../PLN6000101_MERN_Development"
                   else
                     echo "Error: Build directory does not exist."
                     exit 1
@@ -53,5 +53,5 @@ steps:
       - '-c'
       - |-
         echo "Uploading tar.gz archive to Google Cloud Storage..."
-                  gsutil cp public_vitejs_staticsite_brainwave.git/PLN6000099_MERN_Development gs://devozy/PLN6000099_MERN_Development/1.0.0/PLN6000099_MERN_Development
+                  gsutil cp public_vitejs_staticsite_brainwave.git/PLN6000101_MERN_Development gs://devozy/PLN6000101_MERN_Development/1.0.0/PLN6000101_MERN_Development
                   echo "Uploaded tar.gz archive to Google Cloud Storage..."
