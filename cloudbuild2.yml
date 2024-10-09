@@ -1,0 +1,58 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+steps:
+  - name: gcr.io/cloud-builders/git
+    entrypoint: bash
+    args:
+      - '-c'
+      - |-
+        echo "Cloning the repository..."
+              git config --global credential.helper 'store --file=/root/.git-credentials'
+              echo "https://main:@github.com/vixky/node:18.20.4" > /root/.git-credentials
+              git clone -b token https://github.com/vixky/node:18.20.4
+  - name: 'node:18.20.4'
+    entrypoint: bash
+    args:
+      - '-c'
+      - |-
+        echo "Installing dependencies..."
+              cd devozy
+              npm install --force
+  - name: 'node:18.20.4'
+    entrypoint: bash
+    args:
+      - '-c'
+      - |-
+        echo "Building project..."
+              cd devozy
+              npm run build --verbose
+  - name: 'node:18.20.4'
+    entrypoint: bash
+    args:
+      - '-c'
+      - |-
+        echo "Node.js version:"
+              node -v
+  - name: 'node:18.20.4'
+    entrypoint: bash
+    args:
+      - '-c'
+      - |-
+        echo "Creating tar.gz archive of build files..."
+              if [ -d devozy/build ]; then
+                cd devozy/build
+                tar -czvf ../1.0.01 *
+                echo "Tar file created at: $(pwd)/../1.0.01"
+              else
+                echo "Error: Build directory does not exist."
+                exit 1
+              fi
+  - name: gcr.io/cloud-builders/gsutil
+    entrypoint: bash
+    args:
+      - '-c'
+      - |-
+        echo "Uploading tar.gz archive to Google Cloud Storage..."
+              gsutil cp devozy/1.0.01 gs://10001_mern/git/10001/1.0.01
+              echo "Uploaded tar.gz archive to Google Cloud Storage..."
+
