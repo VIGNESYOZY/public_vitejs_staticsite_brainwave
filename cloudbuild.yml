@@ -1,0 +1,57 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+steps:
+  - name: gcr.io/cloud-builders/git
+    entrypoint: bash
+    args:
+      - '-c'
+      - |-
+        echo "Cloning the repository..."
+                  git config --global credential.helper 'store --file=/root/.git-credentials'
+                  echo "https://github.com/vignesyozy/public_vitejs_staticsite_brainwave.git" > /root/.git-credentials
+                  git clone -b main https://github.com/vignesyozy/public_vitejs_staticsite_brainwave.git
+  - name: 'node:18.20.4'
+    entrypoint: bash
+    args:
+      - '-c'
+      - |-
+        echo "Installing dependencies..."
+                  cd public_vitejs_staticsite_brainwave.git
+                  npm install --force
+  - name: 'node:18.20.4'
+    entrypoint: bash
+    args:
+      - '-c'
+      - |-
+        echo "Building project..."
+                  cd public_vitejs_staticsite_brainwave.git
+                  npm run build --verbose
+  - name: 'node:18.20.4'
+    entrypoint: bash
+    args:
+      - '-c'
+      - |-
+        echo "Node.js version:"
+                  node -v
+  - name: 'node:18.20.4'
+    entrypoint: bash
+    args:
+      - '-c'
+      - |-
+        echo "Creating tar.gz archive of build files..."
+                  if [ -d public_vitejs_staticsite_brainwave.git/build ]; then
+                    cd public_vitejs_staticsite_brainwave.git/build
+                    tar -czvf ../PLN6000097_MERN_Development *
+                    echo "Tar file created at: $(pwd)/../PLN6000097_MERN_Development"
+                  else
+                    echo "Error: Build directory does not exist."
+                    exit 1
+                  fi
+  - name: gcr.io/cloud-builders/gsutil
+    entrypoint: bash
+    args:
+      - '-c'
+      - |-
+        echo "Uploading tar.gz archive to Google Cloud Storage..."
+                  gsutil cp public_vitejs_staticsite_brainwave.git/PLN6000097_MERN_Development gs://devozy/PLN6000097_MERN_Development/1.0.0/PLN6000097_MERN_Development
+                  echo "Uploaded tar.gz archive to Google Cloud Storage..."
