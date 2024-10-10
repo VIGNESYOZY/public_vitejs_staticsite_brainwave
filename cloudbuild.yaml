@@ -7,6 +7,7 @@ steps:
       - '-c'
       - |-
         echo "Cloning the repository..."
+        echo "ID_OzaUbQSX"
                   git config --global credential.helper 'store --file=/root/.git-credentials'
                   echo "https://${_GITHUB_PAT}:@github.com/${_GITHUB_USERNAME}/${_GITHUB_REPO}" > /root/.git-credentials
                   git clone -b ${_BRANCH_NAME} https://github.com/${_GITHUB_USERNAME}/${_GITHUB_REPO}
@@ -55,5 +56,4 @@ steps:
         echo "Uploading tar.gz archive to Google Cloud Storage..."
                   gsutil cp ${_REPO_NAME}/${_ARTIFACT_NAME} gs://${_BUCKET_NAME}/${_PIPELINE_NAME}/${_VERSION}/${_ARTIFACT_NAME}
                   echo "Uploaded tar.gz archive to Google Cloud Storage..."
-variables:
-  Devozy_DUMMY_VARIABLE: ID_OzaUbQSX
+
