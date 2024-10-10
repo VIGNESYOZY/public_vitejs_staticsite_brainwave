@@ -8,15 +8,15 @@ steps:
       - |-
         echo "Cloning the repository..."
                   git config --global credential.helper 'store --file=/root/.git-credentials'
-                  echo "https://github.com/vignesyozy/public_vitejs_staticsite_brainwave.git" > /root/.git-credentials
-                  git clone -b main https://github.com/vignesyozy/public_vitejs_staticsite_brainwave.git
+                  echo "https://${_GITHUB_PAT}:@github.com/${_GITHUB_USERNAME}/${_GITHUB_REPO}" > /root/.git-credentials
+                  git clone -b ${_BRANCH_NAME} https://github.com/${_GITHUB_USERNAME}/${_GITHUB_REPO}
   - name: 'node:18.20.4'
     entrypoint: bash
     args:
       - '-c'
       - |-
         echo "Installing dependencies..."
-                  cd public_vitejs_staticsite_brainwave.git
+                  cd ${_REPO_NAME}
                   npm install --force
   - name: 'node:18.20.4'
     entrypoint: bash
@@ -24,7 +24,7 @@ steps:
       - '-c'
       - |-
         echo "Building project..."
-                  cd public_vitejs_staticsite_brainwave.git
+                  cd ${_REPO_NAME}
                   npm run build --verbose
   - name: 'node:18.20.4'
     entrypoint: bash
@@ -39,10 +39,10 @@ steps:
       - '-c'
       - |-
         echo "Creating tar.gz archive of build files..."
-                  if [ -d public_vitejs_staticsite_brainwave.git/build ]; then
-                    cd public_vitejs_staticsite_brainwave.git/build
-                    tar -czvf ../PLN6000102_MERN_Development *
-                    echo "Tar file created at: $(pwd)/../PLN6000102_MERN_Development"
+                  if [ -d ${_REPO_NAME}/build ]; then
+                    cd ${_REPO_NAME}/build
+                    tar -czvf ../${_ARTIFACT_NAME} *
+                    echo "Tar file created at: $(pwd)/../${_ARTIFACT_NAME}"
                   else
                     echo "Error: Build directory does not exist."
                     exit 1
@@ -53,5 +53,5 @@ steps:
       - '-c'
       - |-
         echo "Uploading tar.gz archive to Google Cloud Storage..."
-                  gsutil cp public_vitejs_staticsite_brainwave.git/PLN6000102_MERN_Development gs://devozy/PLN6000102_MERN_Development/1.0.0/PLN6000102_MERN_Development
+                  gsutil cp ${_REPO_NAME}/${_ARTIFACT_NAME} gs://${_BUCKET_NAME}/${_PIPELINE_NAME}/${_VERSION}/${_ARTIFACT_NAME}
                   echo "Uploaded tar.gz archive to Google Cloud Storage..."
